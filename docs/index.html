@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Uno helps AI assistants make focused web, code, image, and video changes from shorter prompts.">
+  <meta name="uno-playground-endpoint" content="">
   <title>Uno — A preflight for AI edits</title>
   <style>
     :root {
@@ -44,6 +45,7 @@
     .fields { display: grid; gap: 1rem; }
     .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 1rem; }
     label { display: block; font-weight: 650; }
+    label[hidden] { display: none; }
     input, select, textarea, button { font: inherit; }
     input, select, textarea { display: block; width: 100%; margin-top: .3rem; padding: .55rem .7rem; border: 1px solid var(--line); border-radius: .4rem; color: var(--ink); background: var(--bg); }
     textarea { resize: vertical; }
@@ -79,7 +81,7 @@
 
     <section class="demo builder" id="try-uno" aria-labelledby="builder-title">
       <h2 id="builder-title">Try Uno</h2>
-      <p class="intro">Write a request or load an editable example. Build a prompt to paste into your AI assistant. Your entries stay in this browser.</p>
+      <p class="intro">Write a request or load an editable example. Build a prompt to paste into your AI assistant. Building a prompt happens in this browser.</p>
       <noscript><p>Enable JavaScript to use the prompt builder.</p></noscript>
       <form id="prompt-form">
         <fieldset id="builder-fields" class="fields" disabled>
@@ -136,6 +138,18 @@
           <textarea id="generated-prompt" rows="9" readonly></textarea>
         </label>
         <button id="copy-prompt" type="button">Copy prompt</button>
+        <details id="playground" class="output" hidden>
+          <summary>Live AI preview beta</summary>
+          <p class="hint">Running a preview sends the built prompt to OpenAI. Use sample text or details you are comfortable sharing.</p>
+          <label for="beta-code">Beta access code
+            <input id="beta-code" type="password" autocomplete="off">
+          </label>
+          <p><button id="run-preview" type="button">Run AI preview</button></p>
+          <p id="preview-status" class="hint" role="status"></p>
+          <label for="preview-result" id="preview-output" hidden>AI preview
+            <textarea id="preview-result" rows="6" readonly></textarea>
+          </label>
+        </details>
       </div>
       <p id="builder-status" class="hint" role="status"></p>
     </section>
@@ -158,5 +172,6 @@
     </footer>
   </main>
   <script src="./prompt-builder.js"></script>
+  <script src="./playground.js"></script>
 </body>
 </html>
