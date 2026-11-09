@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Uno helps AI assistants make focused web, code, image, and video changes from shorter prompts.">
+  <title>Uno — A preflight for AI edits</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: system-ui, sans-serif;
+      --bg: #f7f7f4;
+      --ink: #171a18;
+      --muted: #4d5750;
+      --line: #b4beb5;
+      --accent: #225c42;
+      --on-accent: #fff;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141916;
+        --ink: #edf4ef;
+        --muted: #bac8bf;
+        --line: #596960;
+        --accent: #a8e0bd;
+        --on-accent: #142019;
+      }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); line-height: 1.6; }
+    main { max-width: 64rem; margin: auto; padding: clamp(2rem, 7vw, 6rem) 1.25rem; }
+    h1 { max-width: 15ch; margin: .5rem 0 1rem; font-size: clamp(2.5rem, 7vw, 5rem); line-height: 1.05; letter-spacing: -.05em; }
+    h2 { margin-top: 0; }
+    p { max-width: 60ch; }
+    a { color: var(--accent); }
+    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+    .label { font-size: .85rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .intro, footer { color: var(--muted); }
+    .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin: 1.5rem 0 3rem; }
+    .button { padding: .65rem 1rem; border-radius: .4rem; background: var(--accent); color: var(--on-accent); font-weight: 700; text-decoration: none; }
+    .demo { padding: clamp(1rem, 4vw, 2rem); border: 1px solid var(--line); border-radius: .75rem; }
+    blockquote { margin: .5rem 0 1.5rem; padding-left: 1rem; border-left: 3px solid var(--accent); font-size: 1.2rem; }
+    li + li { margin-top: .4rem; }
+    footer { margin-top: 2.5rem; font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="label">Uno</div>
+      <h1>One line in. A focused change out.</h1>
+      <p class="intro">Load Uno’s instructions once, then ask for the change you want.
+        Before acting, your AI assistant checks what it can reuse, what it should
+        preserve, and whether the change fits your limits.</p>
+      <nav class="actions" aria-label="Get started">
+        <a class="button" href="https://github.com/cdanescmd/Uno/blob/main/UNO.md">Get Uno instructions</a>
+        <a href="https://github.com/cdanescmd/Uno/blob/main/EXAMPLES.md">View examples</a>
+      </nav>
+    </header>
+
+    <section class="demo" aria-labelledby="demo-title">
+      <h2 id="demo-title">See the preflight in action</h2>
+      <div class="label">Your request</div>
+      <blockquote>Make the hero button full width on mobile.</blockquote>
+      <div class="label">What Uno asks the assistant to check</div>
+      <ol>
+        <li>Find the hero button and its existing mobile breakpoint.</li>
+        <li>Reuse the current rule if it can handle the change.</li>
+        <li>Keep the desktop layout and other buttons intact.</li>
+      </ol>
+    </section>
+
+    <footer>
+      For web design, code, images, and video.
+      <a href="https://github.com/cdanescmd/Uno">View Uno on GitHub</a>.
+    </footer>
+  </main>
+</body>
+</html>
