@@ -21,7 +21,7 @@
       --metal-light: #518768;
       --metal-mid: #226045;
       --metal-dark: #153c2a;
-      --glint: #dcffea80;
+      --glint: #e3ffed;
       --button-glint: #e4fff320;
     }
     @media (prefers-color-scheme: dark) {
@@ -37,7 +37,7 @@
         --metal-light: #e1ffeb;
         --metal-mid: #9bd9b2;
         --metal-dark: #569371;
-        --glint: #f3fff4d0;
+        --glint: #f3fff4;
         --button-glint: #ffffff80;
       }
     }
@@ -53,7 +53,9 @@
     main { max-width: 48rem; margin: auto; padding: clamp(3rem, 10vw, 7rem) 1.25rem 2rem; }
     header, footer { text-align: center; }
     h1 {
-      margin: 0;
+      position: relative;
+      width: fit-content;
+      margin: 0 auto;
       color: var(--accent);
       font-size: clamp(5rem, 18vw, 10rem);
       font-weight: 800;
@@ -61,19 +63,36 @@
       letter-spacing: -.085em;
       padding: .08em .1em .12em 0;
     }
+    .wordmark-reflection, .motion-toggle { display: none; }
     @supports (background-clip: text) {
       h1 {
-        background:
-          linear-gradient(115deg, transparent 37%, var(--glint) 48%, transparent 59%) 110% 0 / 260% 100%,
-          linear-gradient(175deg, var(--metal-light) 12%, var(--metal-mid) 42%, var(--metal-dark) 56%, var(--metal-mid) 82%);
+        background: linear-gradient(175deg, var(--metal-light) 12%, var(--metal-mid) 42%, var(--metal-dark) 56%, var(--metal-mid) 82%);
         background-clip: text;
         color: transparent;
         filter: drop-shadow(0 0 .24em var(--wash));
-        animation: wordmark-glint 3s ease-out 2;
       }
-      @keyframes wordmark-glint {
-        from { background-position: 110% 0, 0 0; }
-        to { background-position: -25% 0, 0 0; }
+    }
+    @supports (background-clip: text) and (mask-image: linear-gradient(black, transparent)) {
+      @media (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+        .wordmark-reflection {
+          display: block;
+          position: absolute;
+          inset: 0;
+          padding: inherit;
+          pointer-events: none;
+          background: linear-gradient(158deg, var(--glint) 20%, var(--metal-light) 64%, var(--glint));
+          background-clip: text;
+          -webkit-text-stroke: 1px var(--glint);
+          mask: linear-gradient(115deg, transparent 36%, #0005 45%, #000 50%, #0008 54%, transparent 64%) 100% 0 / 280% 100% no-repeat;
+          animation: wordmark-sweep 3.8s linear infinite;
+        }
+        @keyframes wordmark-sweep {
+          0% { mask-position: 100% 0; }
+          65%, 100% { mask-position: 0 0; }
+        }
+        .motion-toggle { display: inline-flex; align-items: center; gap: .35rem; cursor: pointer; }
+        .motion-toggle input { width: 1rem; height: 1rem; margin: 0; accent-color: var(--accent); }
+        body:has(.motion-toggle input:checked) .wordmark-reflection { display: none; }
       }
     }
     .tagline { margin: .65rem 0 .5rem; font-size: clamp(1.25rem, 4vw, 2rem); font-weight: 700; letter-spacing: -.035em; }
@@ -124,14 +143,14 @@
     #builder-status:empty { margin: 0; }
     footer { margin-top: clamp(2.5rem, 9vw, 5rem); }
     @media (max-width: 34rem) { .composer { grid-template-columns: 1fr; } }
-    @media (prefers-reduced-motion: reduce) { h1 { animation: none; } .primary { transition: none; } }
+    @media (prefers-reduced-motion: reduce) { .primary { transition: none; } }
     @media (forced-colors: active) { h1 { color: CanvasText; background: none; filter: none; } }
   </style>
 </head>
 <body>
   <main>
     <header>
-      <h1>Uno</h1>
+      <h1>Uno<span class="wordmark-reflection" aria-hidden="true">Uno</span></h1>
       <p class="tagline">One line in. A focused change out.</p>
       <p class="intro">Write a request or load an editable web, code, image, or video example. Uno builds a prompt that tells your AI assistant what to check before acting.</p>
     </header>
@@ -177,6 +196,7 @@
         <a href="https://github.com/cdanescmd/Uno/blob/main/UNO.md">Uno instructions</a>
         <a href="https://github.com/cdanescmd/Uno/blob/main/EXAMPLES.md">More examples</a>
         <a href="https://github.com/cdanescmd/Uno">GitHub</a>
+        <label class="motion-toggle"><input type="checkbox"> Pause motion</label>
       </nav>
     </footer>
   </main>
