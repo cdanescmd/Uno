@@ -16,6 +16,13 @@
       --line: #b4beb5;
       --accent: #225c42;
       --on-accent: #fff;
+      --panel: #f0f4ef;
+      --wash: #6da68930;
+      --metal-light: #518768;
+      --metal-mid: #226045;
+      --metal-dark: #153c2a;
+      --glint: #dcffea80;
+      --button-glint: #e4fff320;
     }
     @media (prefers-color-scheme: dark) {
       :root {
@@ -25,113 +32,124 @@
         --line: #596960;
         --accent: #a8e0bd;
         --on-accent: #142019;
+        --panel: #18221c;
+        --wash: #77e7aa2a;
+        --metal-light: #e1ffeb;
+        --metal-mid: #9bd9b2;
+        --metal-dark: #569371;
+        --glint: #f3fff4d0;
+        --button-glint: #ffffff80;
       }
     }
     * { box-sizing: border-box; }
-    body { margin: 0; background: var(--bg); color: var(--ink); line-height: 1.6; }
-    main { max-width: 64rem; margin: auto; padding: clamp(2rem, 7vw, 6rem) 1.25rem; }
-    h1 { max-width: 15ch; margin: .5rem 0 1rem; font-size: clamp(2.5rem, 7vw, 5rem); line-height: 1.05; letter-spacing: -.05em; }
-    h2 { margin-top: 0; }
-    p { max-width: 60ch; }
+    [hidden] { display: none !important; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(ellipse at 50% 0, var(--wash), transparent 36rem), var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+    main { max-width: 48rem; margin: auto; padding: clamp(3rem, 10vw, 7rem) 1.25rem 2rem; }
+    header, footer { text-align: center; }
+    h1 {
+      margin: 0;
+      color: var(--accent);
+      font-size: clamp(5rem, 18vw, 10rem);
+      font-weight: 800;
+      line-height: .98;
+      letter-spacing: -.085em;
+      padding: .08em .1em .12em 0;
+    }
+    @supports (background-clip: text) {
+      h1 {
+        background:
+          linear-gradient(115deg, transparent 37%, var(--glint) 48%, transparent 59%) 110% 0 / 260% 100%,
+          linear-gradient(175deg, var(--metal-light) 12%, var(--metal-mid) 42%, var(--metal-dark) 56%, var(--metal-mid) 82%);
+        background-clip: text;
+        color: transparent;
+        filter: drop-shadow(0 0 .24em var(--wash));
+        animation: wordmark-glint 3s ease-out 2;
+      }
+      @keyframes wordmark-glint {
+        from { background-position: 110% 0, 0 0; }
+        to { background-position: -25% 0, 0 0; }
+      }
+    }
+    .tagline { margin: .65rem 0 .5rem; font-size: clamp(1.25rem, 4vw, 2rem); font-weight: 700; letter-spacing: -.035em; }
+    .intro { max-width: 50ch; margin: 0 auto; color: var(--muted); }
     a { color: var(--accent); }
-    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-    .label { font-size: .85rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
-    .intro, footer { color: var(--muted); }
-    .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin: 1.5rem 0 3rem; }
-    .button { padding: .65rem 1rem; border-radius: .4rem; background: var(--accent); color: var(--on-accent); font-weight: 700; text-decoration: none; }
-    .demo { padding: clamp(1rem, 4vw, 2rem); border: 1px solid var(--line); border-radius: .75rem; }
-    .builder { margin-bottom: 1.5rem; }
-    fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
-    .fields { display: grid; gap: 1rem; }
-    .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 1rem; }
-    label { display: block; font-weight: 650; }
-    label[hidden] { display: none; }
-    input, select, textarea, button { font: inherit; }
-    input, select, textarea { display: block; width: 100%; margin-top: .3rem; padding: .55rem .7rem; border: 1px solid var(--line); border-radius: .4rem; color: var(--ink); background: var(--bg); }
+    .links { display: flex; justify-content: center; flex-wrap: wrap; gap: .6rem 1.25rem; margin-top: 1rem; }
+    .builder { max-width: 38rem; margin: 2rem auto 0; }
+    .composer { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .5rem; align-items: end; }
+    .composer, .output { padding: .65rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--panel); }
+    .composer:focus-within { border-color: var(--accent); box-shadow: 0 0 1.2rem var(--wash); }
+    .composer textarea { min-height: 3.25rem; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    input, textarea, button { font: inherit; }
+    input, textarea {
+      display: block;
+      width: 100%;
+      padding: .6rem .75rem;
+      border: 1px solid var(--line);
+      border-radius: .65rem;
+      background: var(--bg);
+      color: var(--ink);
+    }
     textarea { resize: vertical; }
-    button { cursor: pointer; padding: .55rem .8rem; border: 1px solid var(--line); border-radius: .4rem; color: var(--ink); background: var(--bg); }
+    button {
+      cursor: pointer;
+      padding: .55rem .85rem;
+      border: 1px solid var(--line);
+      border-radius: .65rem;
+      color: var(--ink);
+      background: var(--panel);
+      font-weight: 650;
+    }
+    .primary {
+      color: var(--on-accent);
+      background: linear-gradient(120deg, transparent 35%, var(--button-glint) 50%, transparent 65%) 110% 0 / 280% 100%, var(--accent);
+      border-color: var(--accent);
+      transition: background-position .55s ease-out, box-shadow .2s ease-out;
+    }
+    .primary:is(:hover, :focus-visible) { background-position: -25% 0; box-shadow: 0 0 .9rem var(--wash); }
     button:disabled { cursor: default; opacity: .6; }
-    :is(button, input, select, textarea, summary):focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    :is(a, button, input, textarea, summary):focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .examples { display: flex; flex-wrap: wrap; justify-content: center; gap: .45rem; margin-top: .65rem; }
+    .output { margin-top: 1rem; }
+    .output textarea, .output input { margin: .4rem 0 .7rem; }
     summary { cursor: pointer; color: var(--accent); font-weight: 650; }
-    details .row { margin-top: .7rem; }
-    .builder .actions { margin: 0; }
-    .hint { color: var(--muted); font-size: .9rem; font-weight: 400; }
-    .output { margin-top: 1.25rem; }
-    .output textarea { margin-bottom: .75rem; }
-    #builder-status { min-height: 1.6em; margin: .65rem 0 0; }
-    blockquote { margin: .5rem 0 1.5rem; padding-left: 1rem; border-left: 3px solid var(--accent); font-size: 1.2rem; }
-    li + li { margin-top: .4rem; }
-    footer { margin-top: 2.5rem; font-size: .9rem; }
+    .hint, footer { color: var(--muted); font-size: .9rem; }
+    #builder-status { margin: .65rem 0 0; text-align: center; }
+    #builder-status:empty { margin: 0; }
+    footer { margin-top: clamp(2.5rem, 9vw, 5rem); }
+    @media (max-width: 34rem) { .composer { grid-template-columns: 1fr; } }
+    @media (prefers-reduced-motion: reduce) { h1 { animation: none; } .primary { transition: none; } }
+    @media (forced-colors: active) { h1 { color: CanvasText; background: none; filter: none; } }
   </style>
 </head>
 <body>
   <main>
     <header>
-      <div class="label">Uno</div>
-      <h1>One line in. A focused change out.</h1>
-      <p class="intro">Load Uno’s instructions once, then ask for the change you want.
-        Before acting, your AI assistant checks what it can reuse, what it should
-        preserve, and whether the change fits your limits.</p>
-      <nav class="actions" aria-label="Get started">
-        <a class="button" href="#try-uno">Try Uno</a>
-        <a href="https://github.com/cdanescmd/Uno/blob/main/UNO.md">Get Uno instructions</a>
-        <a href="https://github.com/cdanescmd/Uno/blob/main/EXAMPLES.md">View examples</a>
-      </nav>
+      <h1>Uno</h1>
+      <p class="tagline">One line in. A focused change out.</p>
+      <p class="intro">Write a request or load an editable web, code, image, or video example. Uno builds a prompt that tells your AI assistant what to check before acting.</p>
     </header>
 
-    <section class="demo builder" id="try-uno" aria-labelledby="builder-title">
-      <h2 id="builder-title">Try Uno</h2>
-      <p class="intro">Write a request or load an editable example. Build a prompt to paste into your AI assistant. Building a prompt happens in this browser.</p>
+    <section class="builder" id="try-uno" aria-label="Try Uno">
       <noscript><p>Enable JavaScript to use the prompt builder.</p></noscript>
       <form id="prompt-form">
-        <fieldset id="builder-fields" class="fields" disabled>
-          <div class="row">
-            <label for="work-type">Work type
-              <select id="work-type" name="type">
-                <option value="web">Web design</option>
-                <option value="code">Code</option>
-                <option value="image">Image</option>
-                <option value="video">Video</option>
-              </select>
-            </label>
-            <label for="output-mode">Output mode
-              <select id="output-mode" name="mode">
-                <option value="work">Do the work</option>
-                <option value="preview">Preview only</option>
-                <option value="prompt">Prompt only</option>
-              </select>
-            </label>
-          </div>
-          <div class="actions">
-            <button id="load-example" type="button">Load example for this work type</button>
-          </div>
-          <label for="change-request">What do you want to change or create?
-            <textarea id="change-request" name="request" rows="3" required maxlength="2000" placeholder="Make the hero button full width on mobile."></textarea>
-          </label>
-          <label for="preserve">What should stay the same? <span class="hint">Optional</span>
-            <textarea id="preserve" name="preserve" rows="2" maxlength="1000" placeholder="Keep the desktop layout and other buttons intact."></textarea>
-          </label>
-          <details id="budgets">
-            <summary>Set optional limits</summary>
-            <div class="row">
-              <label for="reply-limit">Reply lines
-                <input id="reply-limit" name="replyLines" type="number" min="1" step="1">
-              </label>
-              <label for="code-limit">Changed code lines
-                <input id="code-limit" name="codeLines" type="number" min="0" step="1">
-              </label>
-              <label for="prompt-limit">Generator prompt words
-                <input id="prompt-limit" name="promptWords" type="number" min="1" step="1">
-              </label>
-              <label for="attempt-limit">Generation attempts
-                <input id="attempt-limit" name="attempts" type="number" min="0" step="1">
-              </label>
-            </div>
-          </details>
-          <div class="actions">
-            <button class="button" type="submit">Build prompt</button>
-          </div>
-        </fieldset>
+        <div class="composer">
+          <label class="sr-only" for="change-request">Your request</label>
+          <textarea id="change-request" name="request" rows="2" maxlength="2000" placeholder="What would you like to change?" disabled></textarea>
+          <button class="primary" id="builder-action" type="submit" aria-controls="load-example" aria-expanded="false" disabled>Try an example</button>
+        </div>
+        <div class="examples" id="load-example" role="group" aria-label="Editable examples" hidden>
+          <button type="button" data-example="web">Web</button>
+          <button type="button" data-example="code">Code</button>
+          <button type="button" data-example="image">Image</button>
+          <button type="button" data-example="video">Video</button>
+        </div>
       </form>
       <div class="output" id="builder-output" hidden>
         <label for="generated-prompt">Your prompt
@@ -154,21 +172,12 @@
       <p id="builder-status" class="hint" role="status"></p>
     </section>
 
-    <section class="demo" aria-labelledby="demo-title">
-      <h2 id="demo-title">See the preflight in action</h2>
-      <div class="label">Your request</div>
-      <blockquote>Make the hero button full width on mobile.</blockquote>
-      <div class="label">What Uno asks the assistant to check</div>
-      <ol>
-        <li>Find the hero button and its existing mobile breakpoint.</li>
-        <li>Reuse the current rule if it can handle the change.</li>
-        <li>Keep the desktop layout and other buttons intact.</li>
-      </ol>
-    </section>
-
     <footer>
-      For web design, code, images, and video.
-      <a href="https://github.com/cdanescmd/Uno">View Uno on GitHub</a>.
+      <nav class="links" aria-label="Uno resources">
+        <a href="https://github.com/cdanescmd/Uno/blob/main/UNO.md">Uno instructions</a>
+        <a href="https://github.com/cdanescmd/Uno/blob/main/EXAMPLES.md">More examples</a>
+        <a href="https://github.com/cdanescmd/Uno">GitHub</a>
+      </nav>
     </footer>
   </main>
   <script src="./prompt-builder.js"></script>

@@ -1,101 +1,76 @@
 "use strict";
 
-const workTypes = {
-  web: {
-    label: "Web design",
-    guidance: "Reuse an existing design token, component, or breakpoint where possible.",
-    request: "Make the hero button full width on mobile.",
-    preserve: "Keep the desktop layout and other buttons intact.",
-  },
-  code: {
-    label: "Code",
-    guidance: "Reuse existing code and check the smallest relevant test or build.",
-    request: "Fix duplicate rows when saving twice.",
-    preserve: "Keep the public interface and unrelated save behavior.",
-  },
-  image: {
-    label: "Image",
-    guidance: "Use the supplied image as the reference and target the requested region when editing.",
-    request: "Remove the tie from the attached headshot.",
-    preserve: "Keep the face, crop, pose, and lighting.",
-  },
-  video: {
-    label: "Video",
-    guidance: "For an existing clip, check for a direct timeline, transform, or audio edit before generating.",
-    request: "Add a slow push-in to the attached clip.",
-    preserve: "Keep the clip timing and existing audio.",
-  },
+const examples = {
+  web: "Make the hero button full width on mobile. Keep the desktop layout and other buttons intact.",
+  code: "Fix duplicate rows when saving twice. Keep the public interface. Code budget ≤ 12 changed lines.",
+  image: "Remove the tie from the attached headshot. Keep the face, crop, pose, and lighting.",
+  video: "Add a slow push-in to the attached clip. Keep the timing and existing audio.",
 };
 
-const outputModes = {
-  work: "Do the requested work if the necessary tools are available. Verify what changed and report it briefly.",
-  preview: "Preview only. Describe the proposed action in up to three lines. Stop before editing or generating.",
-  prompt: "Prompt only. Return one paste-ready prompt and any essential settings. Do not run a generator.",
-};
-
-const limits = [
-  ["replyLines", "Reply budget", "prose lines, excluding the requested artifact"],
-  ["codeLines", "Code budget", "changed lines (additions plus deletions across the patch)"],
-  ["promptWords", "Generator prompt budget", "words (count any negative prompt too)"],
-  ["attempts", "Generation budget", "attempts (count retries)"],
-];
-
-function buildPrompt(values) {
-  const work = workTypes[values.type];
-  const budgetLines = limits.flatMap(([field, label, unit]) => {
-    const value = values[field];
-    return value ? [`${label} ≤ ${Number(value)} ${unit}.`] : [];
-  });
+function buildPrompt(request) {
   return [
-    `Use the Uno preflight for this ${work.label.toLowerCase()} request.`,
-    `Request: ${values.request.trim()}`,
-    values.preserve.trim() && `Preserve: ${values.preserve.trim()}`,
-    "Before acting, identify the current version, look for reuse, and choose the smallest complete change. Preserve unrelated details. If an edit needs a missing source, ask for it.",
-    work.guidance,
-    ...budgetLines,
-    "Check any explicit limits before acting. If a limit cannot be met or verified, stop and explain the blocker.",
-    ["image", "video"].includes(values.type) && values.attempts === "" && "For media generation, default to one result and one attempt.",
-    outputModes[values.mode],
-  ].filter(Boolean).join("\n\n");
+    "Use the Uno preflight for this request.",
+    `Request: ${request.trim()}`,
+    "Before acting, identify the current version and what must stay intact. Look for an existing setting, component, code path, or direct media edit. Choose the smallest complete change. If an edit requires a missing source, ask for it.",
+    "Check any reply, code, prompt, or generation limits before acting. Count changed code lines as additions plus deletions. Stop before an action if a hard limit cannot be met or verified.",
+    "For Preview only, describe the proposed action and stop. For Prompt only, return a paste-ready prompt without running a generator. Otherwise do the work with the tools available. Default to one attempt and one result for media generation. Verify the result and report it briefly.",
+  ].join("\n\n");
 }
 
 const form = document.querySelector("#prompt-form");
-const fields = form.elements;
+const requestField = document.querySelector("#change-request");
+const action = document.querySelector("#builder-action");
+const examplePicker = document.querySelector("#load-example");
 const output = document.querySelector("#builder-output");
 const generated = document.querySelector("#generated-prompt");
 const status = document.querySelector("#builder-status");
+
+function updateAction() {
+  const hasRequest = Boolean(requestField.value.trim());
+  action.textContent = hasRequest ? "Build prompt" : "Try an example";
+  if (hasRequest) {
+    examplePicker.hidden = true;
+    action.removeAttribute("aria-expanded");
+    action.removeAttribute("aria-controls");
+  } else {
+    action.setAttribute("aria-expanded", String(!examplePicker.hidden));
+    action.setAttribute("aria-controls", examplePicker.id);
+  }
+}
 
 function clearOutput() {
   output.hidden = true;
   generated.value = "";
   status.textContent = "";
+  updateAction();
 }
 
-form.addEventListener("input", () => {
-  fields.request.setCustomValidity("");
-  clearOutput();
+form.addEventListener("input", clearOutput);
+form.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape" || examplePicker.hidden) return;
+  examplePicker.hidden = true;
+  updateAction();
+  action.focus();
 });
 
-document.querySelector("#load-example").addEventListener("click", () => {
-  const example = workTypes[fields.type.value];
-  fields.request.value = example.request;
-  fields.preserve.value = example.preserve;
-  fields.request.setCustomValidity("");
+examplePicker.addEventListener("click", (event) => {
+  const key = event.target.dataset.example;
+  if (!key) return;
+  requestField.value = examples[key];
   clearOutput();
-  status.textContent = "Example loaded. You can edit it before building.";
-  fields.request.focus();
+  status.textContent = "Example loaded. Edit it or build your prompt.";
+  requestField.focus();
 });
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
-  if (!fields.request.value.trim()) {
-    fields.request.setCustomValidity("Enter a request before building a prompt.");
-    fields.request.reportValidity();
+  const request = requestField.value.trim();
+  if (!request) {
+    examplePicker.hidden = !examplePicker.hidden;
+    updateAction();
     return;
   }
-
-  const values = Object.fromEntries(new FormData(form));
-  generated.value = buildPrompt(values);
+  generated.value = buildPrompt(request);
   output.hidden = false;
   status.textContent = "Prompt ready to copy.";
 });
@@ -111,4 +86,6 @@ document.querySelector("#copy-prompt").addEventListener("click", async () => {
   }
 });
 
-document.querySelector("#builder-fields").disabled = false;
+requestField.disabled = false;
+action.disabled = false;
+updateAction();
