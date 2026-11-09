@@ -1,5 +1,7 @@
 # Uno
 
+Reusable AI preflight for shorter prompts and focused web, code, image, and video changes.
+
 Give your AI assistant the change you want in one line. Uno tells it to check the current version, reuse what's already there, and choose the smallest complete edit before it writes a reply, changes a file, or runs a generation.
 
 Uno is a reusable instruction file for web design, code, images, video, and other revisions. It works with the context and tools your assistant can actually access.
@@ -40,3 +42,7 @@ When you start a new chat, load the rules again unless your tool reliably suppli
 Code budgets count additions plus deletions across all files changed for the task. Replacing one line counts as two. A soft budget can bend for a complete result. A limit given as a maximum, `≤`, or “budget” is binding.
 
 Uno is an instruction protocol. The assistant must have the source and tool access to apply changes, and it must follow the rules to respect budgets. For a hard code budget, Uno requires a countable patch before any write. Media preservation depends on the editor or generator's controls. If a tool cannot support a required constraint, Uno calls that out before running it.
+
+## License
+
+[MIT](LICENSE)
