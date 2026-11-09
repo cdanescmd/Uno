@@ -39,6 +39,24 @@
     .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin: 1.5rem 0 3rem; }
     .button { padding: .65rem 1rem; border-radius: .4rem; background: var(--accent); color: var(--on-accent); font-weight: 700; text-decoration: none; }
     .demo { padding: clamp(1rem, 4vw, 2rem); border: 1px solid var(--line); border-radius: .75rem; }
+    .builder { margin-bottom: 1.5rem; }
+    fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+    .fields { display: grid; gap: 1rem; }
+    .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 1rem; }
+    label { display: block; font-weight: 650; }
+    input, select, textarea, button { font: inherit; }
+    input, select, textarea { display: block; width: 100%; margin-top: .3rem; padding: .55rem .7rem; border: 1px solid var(--line); border-radius: .4rem; color: var(--ink); background: var(--bg); }
+    textarea { resize: vertical; }
+    button { cursor: pointer; padding: .55rem .8rem; border: 1px solid var(--line); border-radius: .4rem; color: var(--ink); background: var(--bg); }
+    button:disabled { cursor: default; opacity: .6; }
+    :is(button, input, select, textarea, summary):focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    summary { cursor: pointer; color: var(--accent); font-weight: 650; }
+    details .row { margin-top: .7rem; }
+    .builder .actions { margin: 0; }
+    .hint { color: var(--muted); font-size: .9rem; font-weight: 400; }
+    .output { margin-top: 1.25rem; }
+    .output textarea { margin-bottom: .75rem; }
+    #builder-status { min-height: 1.6em; margin: .65rem 0 0; }
     blockquote { margin: .5rem 0 1.5rem; padding-left: 1rem; border-left: 3px solid var(--accent); font-size: 1.2rem; }
     li + li { margin-top: .4rem; }
     footer { margin-top: 2.5rem; font-size: .9rem; }
@@ -53,10 +71,74 @@
         Before acting, your AI assistant checks what it can reuse, what it should
         preserve, and whether the change fits your limits.</p>
       <nav class="actions" aria-label="Get started">
-        <a class="button" href="https://github.com/cdanescmd/Uno/blob/main/UNO.md">Get Uno instructions</a>
+        <a class="button" href="#try-uno">Try Uno</a>
+        <a href="https://github.com/cdanescmd/Uno/blob/main/UNO.md">Get Uno instructions</a>
         <a href="https://github.com/cdanescmd/Uno/blob/main/EXAMPLES.md">View examples</a>
       </nav>
     </header>
+
+    <section class="demo builder" id="try-uno" aria-labelledby="builder-title">
+      <h2 id="builder-title">Try Uno</h2>
+      <p class="intro">Write a request or load an editable example. Build a prompt to paste into your AI assistant. Your entries stay in this browser.</p>
+      <noscript><p>Enable JavaScript to use the prompt builder.</p></noscript>
+      <form id="prompt-form">
+        <fieldset id="builder-fields" class="fields" disabled>
+          <div class="row">
+            <label for="work-type">Work type
+              <select id="work-type" name="type">
+                <option value="web">Web design</option>
+                <option value="code">Code</option>
+                <option value="image">Image</option>
+                <option value="video">Video</option>
+              </select>
+            </label>
+            <label for="output-mode">Output mode
+              <select id="output-mode" name="mode">
+                <option value="work">Do the work</option>
+                <option value="preview">Preview only</option>
+                <option value="prompt">Prompt only</option>
+              </select>
+            </label>
+          </div>
+          <div class="actions">
+            <button id="load-example" type="button">Load example for this work type</button>
+          </div>
+          <label for="change-request">What do you want to change or create?
+            <textarea id="change-request" name="request" rows="3" required maxlength="2000" placeholder="Make the hero button full width on mobile."></textarea>
+          </label>
+          <label for="preserve">What should stay the same? <span class="hint">Optional</span>
+            <textarea id="preserve" name="preserve" rows="2" maxlength="1000" placeholder="Keep the desktop layout and other buttons intact."></textarea>
+          </label>
+          <details id="budgets">
+            <summary>Set optional limits</summary>
+            <div class="row">
+              <label for="reply-limit">Reply lines
+                <input id="reply-limit" name="replyLines" type="number" min="1" step="1">
+              </label>
+              <label for="code-limit">Changed code lines
+                <input id="code-limit" name="codeLines" type="number" min="0" step="1">
+              </label>
+              <label for="prompt-limit">Generator prompt words
+                <input id="prompt-limit" name="promptWords" type="number" min="1" step="1">
+              </label>
+              <label for="attempt-limit">Generation attempts
+                <input id="attempt-limit" name="attempts" type="number" min="0" step="1">
+              </label>
+            </div>
+          </details>
+          <div class="actions">
+            <button class="button" type="submit">Build prompt</button>
+          </div>
+        </fieldset>
+      </form>
+      <div class="output" id="builder-output" hidden>
+        <label for="generated-prompt">Your prompt
+          <textarea id="generated-prompt" rows="9" readonly></textarea>
+        </label>
+        <button id="copy-prompt" type="button">Copy prompt</button>
+      </div>
+      <p id="builder-status" class="hint" role="status"></p>
+    </section>
 
     <section class="demo" aria-labelledby="demo-title">
       <h2 id="demo-title">See the preflight in action</h2>
@@ -75,5 +157,6 @@
       <a href="https://github.com/cdanescmd/Uno">View Uno on GitHub</a>.
     </footer>
   </main>
+  <script src="./prompt-builder.js"></script>
 </body>
 </html>
